@@ -84,7 +84,7 @@ export default function Home() {
           <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent mb-2 animate-pulse">
             AI Chat Assistant
           </h1>
-          <p className="text-gray-300 text-sm">Powered by advanced AI technology</p>
+          <p className="text-gray-300 text-sm">Powered by my love for tiramisu</p>
         </div>
       </div>
 
@@ -173,13 +173,13 @@ export default function Home() {
 
         {/* Input Area */}
         <div className="p-6 bg-white/5 backdrop-blur-xl border-t border-white/10">
-          <div className="flex gap-3 items-end">
+          <div className="flex gap-3 items-center">
             <div className="flex-1 relative">
               <textarea
                 ref={textareaRef}
                 className="w-full p-4 pr-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 resize-none transition-all duration-300 hover:bg-white/15 overflow-hidden"
                 rows={1}
-                placeholder="Type your message... (Press Enter to send)"
+                placeholder="Type your message..."
                 value={prompt}
                 onChange={(e) => {
                   setPrompt(e.target.value);
@@ -216,7 +216,7 @@ export default function Home() {
       {/* Footer */}
       <div className="w-full max-w-4xl pt-4 pb-8 text-center">
         <p className="text-gray-400 text-xs">
-          Powered by AI • Your conversation is secure and private
+          Powered by AI • Your conversation MIGHT be secure and private
         </p>
       </div>
     </main>
