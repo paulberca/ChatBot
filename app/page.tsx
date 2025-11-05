@@ -33,6 +33,7 @@ export default function Home() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+    const userPrompt = prompt;
     setPrompt("");
     setLoading(true);
 
@@ -41,17 +42,50 @@ export default function Home() {
       textareaRef.current.style.height = "auto";
     }
 
+    const maxRetries = 10;
+    let retryCount = 0;
+
+    const attemptFetch = async (): Promise<string> => {
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: userPrompt }),
+        });
+        const data = await res.json();
+
+        if (data.reply === "No response" && retryCount < maxRetries) {
+          retryCount++;
+          // Add retry message
+          const retryMessage: Message = {
+            role: "assistant",
+            content: `Servers are kinda full, wait a bit... (Attempt ${retryCount}/${maxRetries})`,
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, retryMessage]);
+          
+          // Wait 2 seconds before retrying
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          // Remove the retry message before next attempt
+          setMessages((prev) => prev.slice(0, -1));
+          
+          return attemptFetch();
+        }
+
+        return data.reply || "No response";
+      } catch (error) {
+        console.error(error);
+        throw error;
+      }
+    };
+
     try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
-      });
-      const data = await res.json();
+      const reply = await attemptFetch();
 
       const assistantMessage: Message = {
         role: "assistant",
-        content: data.reply || "No response",
+        content: reply,
         timestamp: new Date(),
       };
 
