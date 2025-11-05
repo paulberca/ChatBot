@@ -42,7 +42,7 @@ export default function Home() {
       textareaRef.current.style.height = "auto";
     }
 
-    const maxRetries = 10;
+    const maxRetries = 5;
     let retryCount = 0;
 
     const attemptFetch = async (): Promise<string> => {
@@ -59,7 +59,7 @@ export default function Home() {
           // Add retry message
           const retryMessage: Message = {
             role: "assistant",
-            content: `Servers are kinda full, wait a bit... (Attempt ${retryCount}/${maxRetries})`,
+            content: `Owner hasn't payed the bill... (Attempt ${retryCount}/${maxRetries})`,
             timestamp: new Date(),
           };
           setMessages((prev) => [...prev, retryMessage]);

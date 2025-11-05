@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "qwen/qwen3-14b:free",
+        model: "deepseek/deepseek-chat-v3.1:free",
         messages: [
           {
             role: "user",
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       }),
     });
 
-    // Log the raw response for debugging
+    // Log raw response for debugging
     const text = await response.text();
     console.log("OpenRouter raw response:", text);
 
