@@ -36,6 +36,11 @@ export default function Home() {
     setPrompt("");
     setLoading(true);
 
+    // Reset textarea height
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -172,7 +177,7 @@ export default function Home() {
             <div className="flex-1 relative">
               <textarea
                 ref={textareaRef}
-                className="w-full p-4 pr-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 resize-none transition-all duration-300 hover:bg-white/15"
+                className="w-full p-4 pr-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 resize-none transition-all duration-300 hover:bg-white/15 overflow-hidden"
                 rows={1}
                 placeholder="Type your message... (Press Enter to send)"
                 value={prompt}

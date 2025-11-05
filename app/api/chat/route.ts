@@ -1,24 +1,5 @@
 import { NextResponse } from "next/server";
 
-function extractText(content: any): string {
-  // content can be an array of objects or a string
-  if (!content) return "";
-  if (typeof content === "string") return content;
-
-  if (Array.isArray(content)) {
-    // concatenate all text pieces
-    return content
-      .map((item) => {
-        if (typeof item === "string") return item;
-        if (item.type === "text" && item.text) return item.text;
-        return "";
-      })
-      .join("\n");
-  }
-
-  return "";
-}
-
 export async function POST(request: Request) {
   try {
     const { prompt } = await request.json();
@@ -27,32 +8,42 @@ export async function POST(request: Request) {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "HTTP-Referer": "http://localhost:3000",
-        "X-Title": "My Chatbot",
+        "HTTP-Referer": "http://localhost:3000", // optional, replace with your site URL when deployed
+        "X-Title": "My Chatbot", // optional, your site name
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.0-flash-exp:free",
+        model: "qwen/qwen3-14b:free",
         messages: [
           {
             role: "user",
-            content: [
-              {
-                type: "text",
-                text: prompt,
-              },
-            ],
+            content: prompt,
           },
         ],
       }),
     });
 
-    const data = await response.json();
-    const reply = extractText(data.choices?.[0]?.message?.content);
+    // Log the raw response for debugging
+    const text = await response.text();
+    console.log("OpenRouter raw response:", text);
 
-    return NextResponse.json({ reply: reply || "No response" });
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      return NextResponse.json({ reply: "Invalid response from OpenRouter" });
+    }
+
+    // Extract reply safely
+    const reply =
+      data.choices?.[0]?.message?.content ||
+      data.choices?.[0]?.message ||
+      "No response";
+
+    return NextResponse.json({ reply });
   } catch (err) {
-    console.error(err);
+    console.error("API error:", err);
     return NextResponse.json({ error: "Error fetching response." }, { status: 500 });
   }
 }
